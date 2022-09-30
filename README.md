@@ -1,4 +1,4 @@
 # Search
 Search Mr.lu
 
-你好
+##### 预览：*[Search](http://xiaolu.3vzhuji.cc/Search/)*
