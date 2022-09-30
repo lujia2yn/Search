@@ -1,0 +1,424 @@
+ul,
+ol {
+    padding: 0;
+    margin: 0;
+}
+
+a {
+    color: #666;
+}
+
+a:hover {
+    text-decoration: none;
+    color: #666;
+}
+
+li {
+    list-style: none;
+}
+
+img {
+    vertical-align: middle;
+}
+
+body {
+    font-size: 12px;
+}
+
+.a-hover {
+    cursor: pointer;
+}
+
+#app {
+    height: 100vh;
+    background-size: 100% !important;
+    border: none !important;
+}
+
+body {
+    overflow: hidden;
+}
+
+/* 头部标签 */
+@media all {
+    .Toplabel {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-sizing: border-box;
+        padding: 5px 10px;
+        border-bottom: 1px solid rgb(227, 227, 227);
+    }
+
+    .Toplabel ul,
+    .box {
+        display: flex;
+        align-items: center;
+    }
+
+    .Toplabel li {
+        margin-right: 5px;
+        border-radius: 24px;
+        overflow: hidden;
+        background: #fff;
+    }
+
+    .Toplabel a {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 4px 12px;
+        transition: all 0.5s;
+    }
+
+    .Toplabel a:hover {
+        background: rgb(240, 240, 240);
+    }
+
+    .Toplabel img {
+        width: 18px;
+        height: 18px;
+        margin-right: 5px;
+    }
+}
+
+/* 内容部分 */
+@media all {
+    .content {
+        box-sizing: border-box;
+        padding-top: 50px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 42vw;
+        height: 500px;
+        transition: all 0.5s;
+    }
+
+    .logo img {
+        width: 272px;
+        height: 92px;
+    }
+
+    .search {
+        position: relative;
+        z-index: 999999999999 !important;
+        box-sizing: border-box;
+        padding: 10px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        width: 600px;
+        height: 45px;
+        background: #fff;
+        margin: 0 auto;
+        border-radius: 22.5px;
+        border: 1px solid #ccc;
+    }
+
+    .border-hide {
+        border: 1px solid rgb(61, 209, 250);
+        border-bottom: none;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .border-show {
+        border: 1px solid rgb(61, 209, 250);
+    }
+
+    .search img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .search input {
+        width: 530px;
+        border: none;
+        outline: none;
+    }
+
+    .searchBox {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .record {
+        position: absolute;
+        top: 22.5px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 600px;
+        padding: 22.5px 0 0;
+        background: #fff;
+        border: 1px solid rgb(61, 209, 250);
+        border-top: none;
+        border-bottom-left-radius: 22.5px;
+        border-bottom-right-radius: 22.5px;
+    }
+
+    .record-ooverflow {
+        overflow: auto;
+        height: 300px;
+    }
+
+    .list-group-item+.list-group-item {
+        border-top-width: 1px !important;
+    }
+
+    .record a {
+        border: none;
+        border-top: 1px solid rgb(234, 234, 234);
+    }
+
+    .from {
+        position: relative;
+        z-index: 9;
+    }
+
+    .itemBox {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        margin-top: 60px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-content: flex-start;
+        width: 100%;
+        height: 310px;
+        overflow: auto;
+        transition: all 0.5s;
+    }
+
+    .item,
+    .itemHover {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100px;
+        height: 100px;
+        border-radius: 5px;
+    }
+
+    .item .itemTitle {
+        color: #666;
+    }
+
+    .item:hover {
+        background: rgb(231, 231, 231);
+    }
+
+    .itemHover:hover {
+        background: rgb(0, 0, 0, 0.3);
+    }
+
+    .itemImg {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 48px;
+        height: 48px;
+        background: rgba(241, 243, 244, 1);
+        border-radius: 50%;
+    }
+
+    .itemImg img {
+        width: 24px;
+        height: 24px;
+    }
+
+    .itemTitle {
+        width: 100px;
+        height: 36px;
+        line-height: 36px;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: #ccc;
+    }
+
+    .Switches {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-top: 20px;
+        padding-right: 5px;
+    }
+}
+
+/* 日期时间 */
+@media all {
+    .dateBox {
+        width: 400px;
+        height: 400px;
+    }
+
+    #dateBox {
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+
+    .el-calendar-table .el-calendar-day {
+        height: 35px !important;
+        text-align: center;
+    }
+}
+
+/* 工具栏 */
+@media all {
+    #customizeButton {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        right: 30px;
+        bottom: 30px;
+        border: none;
+        border-radius: calc(.5 * var(--cr-button-height));
+        box-shadow: 0 3px 6px rgb(0 0 0 / 16%), 0 1px 2px rgb(0 0 0 / 23%);
+        font-weight: 400;
+        width: 150px;
+        height: 25px;
+        color: rgb(26, 115, 232);
+        border-radius: 25px;
+        cursor: pointer;
+        background: #fff;
+    }
+
+    #customizeButton:hover {
+        background: rgb(250, 250, 250);
+    }
+
+    #customizeButton img {
+        width: 18px;
+        height: 18px;
+        margin-right: 5px;
+    }
+
+    .addBgPick {
+        padding: 10px 0;
+        display: flex;
+        justify-content: center;
+    }
+
+    .pick {
+        width: 300px;
+    }
+
+    .el-drawer__header {
+        margin-bottom: 0 !important;
+    }
+
+    .theme {
+        display: flex;
+        flex-wrap: wrap;
+        box-sizing: border-box;
+        width: 100%;
+        padding: 0 10px;
+    }
+
+    .theme li {
+        position: relative;
+    }
+
+    .theme img,
+    .bgColor {
+        width: 200px;
+        height: 106px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 5px;
+        transform: scale(0.8);
+        transition: all 0.5s;
+        cursor: pointer;
+    }
+
+    .bgColor {
+        font-size: 20px;
+        line-height: 106px;
+        color: #ccc;
+    }
+
+    .theme img:hover,
+    .bgColor:hover {
+        transform: scale(1);
+    }
+
+    .entrance {
+        margin-left: 20px;
+        font-size: 12px;
+    }
+}
+
+/* 当屏幕小于1400px时 */
+@media all and (max-width:1420px) {
+    .search {
+        width: 550px;
+    }
+
+    .record {
+        width: 550px;
+    }
+
+    .content {
+        left: 60%;
+    }
+
+    .search img {
+        margin-right: 10px;
+    }
+
+    .theme {
+        justify-content: space-around;
+    }
+
+    .theme img,
+    .bgColor {
+        width: 240px;
+        height: 136px;
+    }
+}
+
+/* 当屏幕小于1200px时 */
+@media all and (max-width:1200px) {
+    .search {
+        width: 400px;
+    }
+
+    .record {
+        width: 400px;
+    }
+
+    .content {
+        left: 65%;
+    }
+
+    .search img {
+        margin-right: 10px;
+    }
+
+    .theme {
+        justify-content: space-around;
+    }
+
+    #addImg {
+        padding: 0 10px;
+        font-size: 14px;
+    }
+
+    .pick {
+        width: 200px;
+        font-size: 14px;
+    }
+
+    .theme img,
+    .bgColor {
+        width: 250px;
+        height: 130px;
+    }
+}

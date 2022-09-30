@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LY-Search</title>
+    <!-- 引入icon图标 -->
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+    <!-- 引入vue.js -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.9/vue.min.js"></script>
+    <!-- 引入animate.css样式 -->
+    <link rel="stylesheet" href="./css/animate.min.css">
+    <!-- 引入bootstrap.css -->
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <!-- 引入jquery.js -->
+    <script src="./js/jquery.min.js"></script>
+    <!-- 引入bootstrap.js -->
+    <script src="./js/bootstrap.min.js"></script>
+    <!-- 引入element-ui样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入element-ui组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <!-- 引入index.css样式 -->
+    <link rel="stylesheet" href="./css/index.css">
+    <!-- 引入默认数据源 -->
+    <script src="./index.js"></script>
+</head>
+
+<body>
+    <div id="app" :style="themeBackground">
+        <!-- 顶部导航 -->
+        <div class="Toplabel">
+            <!-- 小标签 -->
+            <ul>
+                <transition-group name="animate__animated animate__bounce" enter-active-class="animate__bounceIn"
+                    leave-active-class="animate__bounceOut" class="box">
+                    <li v-for="item in Toplabel.ToplabelDatas" :key="item.id" @contextmenu="edit(item,$event)">
+                        <a :href="item.url">
+                            <img :src="item.iconUrl" alt="">
+                            <span>{{ item.title | intercept }}</span>
+                        </a>
+                    </li>
+                </transition-group>
+            </ul>
+            <!-- 按钮 -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"
+                @click="addBtn">
+                add
+            </button>
+            <!-- 模态框 -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">{{!Toplabel.isEdit ? "添加新的标签页" :
+                                "修改中..."}}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- 输入网址 -->
+                            <div class=" input-group flex-nowrap">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="addon-wrapping">网址</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Url" aria-label="Username"
+                                    aria-describedby="addon-wrapping" v-model.trim="Toplabel.url">
+                            </div>
+                            <br>
+                            <!-- 输入图片地址 -->
+                            <div class="input-group flex-nowrap">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="addon-wrapping">图标</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Icon url" aria-label="Username"
+                                    aria-describedby="addon-wrapping" v-model.trim="Toplabel.iconUrl">
+                            </div>
+                            <br>
+                            <!-- 输入标题地址 -->
+                            <div class="input-group flex-nowrap">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="addon-wrapping">标题</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Title" aria-label="Username"
+                                    aria-describedby="addon-wrapping" v-model.trim="Toplabel.title">
+                            </div>
+                        </div>
+                        <!-- 添加 -->
+                        <div class="modal-footer" v-show="!Toplabel.isEdit">
+                            <button type="button" class="btn btn-primary" @click="addToplabelClici"
+                                :data-dismiss="Toplabel.addToplabel ? 'modal' : ''">添加</button>
+                            <button type=" button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                        </div>
+                        <!-- 修改 -->
+                        <div class="modal-footer" v-show="Toplabel.isEdit">
+                            <button type="button" class="btn btn-info" @click="editToplabelClici"
+                                data-dismiss="modal">确认修改</button>
+                            <button type=" button" class="btn btn-danger" data-dismiss="modal"
+                                @click="delConToplabel">确认删除</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 内容区域  #box -->
+        <div class="content">
+            <!-- logo -->
+            <div class="logo text-center">
+                <img src="./images/logo.png" alt="">
+            </div>
+            <!-- 搜索栏 -->
+            <form class="from" action="jsvsscript:;">
+                <div class="searchBox">
+                    <div :class="inputClass">
+                        <img src="./images/search.png" alt="">
+                        <!-- setTimeout(() => inputSearch.flag=false, 500) -->
+                        <input type="text" @focus="obtain" @blur="setTimeout(() => inputSearch.flag=false, 100)"
+                            v-model.trim="inputSearch.userWord" @keyup.enter="searchConten" placeholder="百度一下，你就知道">
+                    </div>
+                    <div :class=" overflowBox ? 'list-group record record-ooverflow' : 'list-group record' " id="record"
+                        v-show="inputSearch.flag && inputSearch.searchRecord.length > 0">
+                        <a href="#" class="list-group-item list-group-item-action"
+                            v-for="(item,index) in inputSearch.searchRecord" :key="index" @click="searchJump($event)">{{
+                            item
+                            }}</a>
+                        <a class="list-group-item a-hover text-center"
+                            @click="if (confirm('是否清除全部记录')) inputSearch.searchRecord = []">清空记录</a>
+                    </div>
+                </div>
+            </form>
+            <!-- 快捷方式 -->
+            <ul class="itemBox">
+                <li v-for="item in Shortcut.ShortcutData" :key="item.id" @contextmenu="isedit($event,item)">
+                    <a :href="item.url" :class="tool.imgUrl.charAt(0) != '#' ? 'itemHover' : 'item'"
+                        :target="item.isNewOpen ? '_blank' : '' ">
+                        <div class="itemImg"><img :src="item.icon" alt=""></div>
+                        <span class="itemTitle">{{ item.title }}</span>
+                    </a>
+                </li>
+                <li @click="isAdd">
+                    <a href="#" :class="tool.imgUrl.charAt(0) != '#' ? 'itemHover' : 'item'" data-target="#Shortcut"
+                        data-toggle="modal">
+                        <div class="itemImg"><img src="./images/plus-lg.svg" alt=""></div>
+                        <span class="itemTitle">添加快捷方式</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- 内容模块模态框 #box -->
+        <div class="modal fade" id="Shortcut" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class=" modal-header bg-secondary text-white">
+                        <h5 class="modal-title" id="exampleModalLabel" v-show="!Shortcut.ismodify">
+                            相关信息<small style="margin-left: 20px;">温馨提示：图标输入链接就可以</small>
+                        </h5>
+                        <h5 class="modal-title" id="exampleModalLabel" v-show="Shortcut.ismodify">修改快捷方式~</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- 输入网址 -->
+                        <div class="input-group flex-nowrap">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="addon-wrapping">网址</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Url" aria-label="Username"
+                                aria-describedby="addon-wrapping" v-model.trim="Shortcut.ShortcutUrl">
+                        </div>
+                        <br>
+                        <!-- 输入图片地址 -->
+                        <div class="input-group flex-nowrap">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="addon-wrapping">图标</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Icon url" aria-label="Username"
+                                aria-describedby="addon-wrapping" v-model.trim="Shortcut.ShortcutIcon">
+                        </div>
+                        <br>
+                        <!-- 输入标题地址 -->
+                        <div class="input-group flex-nowrap">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="addon-wrapping">标题</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Title" aria-label="Username"
+                                aria-describedby="addon-wrapping" v-model.trim="Shortcut.Shortcuttitle">
+                        </div>
+                        <!-- 新标签页中打开 -->
+                        <div class="custom-control custom-switch Switches">
+                            <input type="checkbox" class="custom-control-input" id="customSwitch1"
+                                v-model="Shortcut.isNewOpen">
+                            <label class="custom-control-label" for="customSwitch1">在新的标签页中打开</label>
+                        </div>
+                    </div>
+                    <!-- 添加 -->
+                    <div class="modal-footer" v-show="!Shortcut.ismodify">
+                        <button type="button" class="btn btn-primary" @click="addShortcut"
+                            :data-dismiss="Shortcut.isAdd ? 'modal' : ''">添加</button>
+                        <button type=" button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    </div>
+                    <!-- 修改 -->
+                    <div class="modal-footer" v-show="Shortcut.ismodify">
+                        <button type="button" class="btn btn-info" data-dismiss="modal"
+                            @click="editShortcut">确认修改</button>
+                        <button type=" button" class="btn btn-danger" data-dismiss="modal"
+                            @click="delShortcut">确认删除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 时间 -->
+        <div class="dateBox">
+            <el-calendar class="calendar" v-model="everySingleDay" id="dateBox"></el-calendar>
+        </div>
+        <!-- 工具栏 -->
+        <div id="customizeButton" @click="tool.drawer = true">
+            <img src="./images/tool.svg" alt="">
+            自定义主题
+        </div>
+        <!-- 侧边栏工具窗 -->
+        <el-drawer title="在这里可以更换壁纸哦！！！-------温馨提示：右击可删除图片" :visible.sync="tool.drawer" direction="rtl"
+            before-close=" done()">
+            <el-link type="primary" class="entrance" href="http://xiaolu.3vzhuji.cc/picture/">《---点击查看更多壁纸---》</el-link>
+            <!-- 添加主题图片部分 -->
+            <div class="addBgPick">
+                <input type="text" class="form-control pick" placeholder="图片链接" v-model.trim="tool.userImgUrl">
+                <button type="submit" class="btn btn-primary" id="addImg" @click="addPicture">添加</button>
+            </div>
+            <!-- 主题图片部分 -->
+            <ul class="theme">
+                <transition-group name="animate__animated animate__bounce" enter-active-class="animate__bounceIn"
+                    leave-active-class="animate__bounceOut" class="theme">
+                    <li v-for="item in tool.imgDatas" :key="item.id" @click="tool.imgUrl=item.url"
+                        @contextmenu="deletePicture($event,item)">
+                        <img :src="item.url" alt="" v-if="item.url.charAt(0) != '#'">
+                        <div class="bgColor text-center" v-if="item.url.charAt(0) =='#'"
+                            :style="`background: ${item.url}`">
+                            {{ item.title }}
+                        </div>
+                    </li>
+                </transition-group>
+            </ul>
+        </el-drawer>
+    </div>
+</body>
+
+<script>
+    //  vue脚本文件 
+    new Vue({
+        data() {
+            return {
+                // 头部导航数据
+                Toplabel: {
+                    addToplabel: false,  // 添加小标签
+                    ToplabelDatas: JSON.parse(localStorage.getItem("ToplabelDatas")) || [],   // 标签数据
+                    url: "",             //用户输入的网址
+                    iconUrl: "",         //用户输入的图标地址
+                    title: "",         //用户输入的标题
+                    isEdit: false,         //修改和删除
+                    nowObj: null,         //右击保存的对象
+                    isDatas: localStorage.getItem("isDatas") || false      //小标签标签只有第一次进行修改
+                },
+                // 搜索框
+                inputSearch: {
+                    flag: false,     //是否显示搜索记录
+                    searchRecord: JSON.parse(localStorage.getItem("searchRecord")) || [],  //搜索记录的存放地址
+                    userWord: ""   //用户搜索的文字
+                },
+                //搜索框下的快捷方式
+                Shortcut: {
+                    ShortcutUrl: "",    //收集用户输入的数据
+                    ShortcutIcon: "",    //收集用户输入的数据
+                    Shortcuttitle: "",    //收集用户输入的数据
+                    isNewOpen: false,
+                    ShortcutData: JSON.parse(localStorage.getItem("ShortcutData")) || [],    //快捷方式的所有数据
+                    isAdd: false,    //是否添加数据
+                    ismodify: false,    //是否为修改状态
+                    newShortcutData: null,    //是否为修改状态
+                    isShortcutData: localStorage.getItem("isShortcutData") || false      //小标签标签只有第一次进行修改
+                },
+                // 日期时间
+                everySingleDay: new Date(),
+                // 工具栏 （主题）
+                tool: {
+                    drawer: false,    //显示或隐藏工具栏
+                    userImgUrl: "",  //用户输入的图片路径
+                    imgUrl: localStorage.getItem("imgUrl") || "#fff",  //用户存放用户当前点击的图片路径 (默认为白色16进制的代码)
+                    imgDatas: JSON.parse(localStorage.getItem("imgDatas")) || [],
+                    isDatas: localStorage.getItem("isToolDatas") || false      //外部图片数据只加载一次
+                }
+            }
+        },
+        mounted() {
+            if (!this.Toplabel.isDatas && confirm("是否加载默认资源")) {
+                // 加载datas里的label配置项里的资源
+                if (!this.Toplabel.isDatas) {
+                    this.Toplabel.ToplabelDatas = gather.label;
+                    this.Toplabel.isDatas = true;
+                    localStorage.setItem("isDatas", JSON.stringify(this.Toplabel.isDatas))
+                }
+                // 加载datas里的bigLabel配置项里的资源
+                if (!this.Shortcut.isShortcutData) {
+                    this.Shortcut.ShortcutData = gather.bigLabel;
+                    this.Shortcut.isDatas = true;
+                    localStorage.setItem("isShortcutData", JSON.stringify(this.Shortcut.isDatas))
+                }
+                // 加载Toplabel里的配置项里的资源
+                if (!this.tool.isDatas) {
+                    this.tool.imgDatas = gather.bjPick;
+                    this.tool.isDatas = true;
+                    localStorage.setItem("isToolDatas", JSON.stringify(this.tool.isDatas))
+                }
+            } else {
+                this.Toplabel.isDatas = true;
+                localStorage.setItem("isDatas", JSON.stringify(this.Toplabel.isDatas));
+            }
+        },
+        methods: {
+            // add
+            addBtn() {
+                // 清空输入框内容
+                this.Toplabel.url = "";
+                this.Toplabel.iconUrl = "";
+                this.Toplabel.title = "";
+                // 是否添加小标签
+                this.Toplabel.addToplabel = true;
+                // 是否为修改状态
+                this.Toplabel.isEdit = false
+            },
+            // 填写数据
+            addToplabelClici() {
+                // 如果用户没有输入东西，该按钮则不生效
+                if (!Boolean(this.Toplabel.url && this.Toplabel.iconUrl && this.Toplabel.title)) {
+                    return this.Toplabel.addToplabel = false
+                } else {
+                    this.Toplabel.addToplabel = true
+                };
+                // 添加数据
+                this.Toplabel.ToplabelDatas.push({
+                    id: `${Date.now() - (Math.random() * 100)}`,
+                    url: this.Toplabel.url,
+                    iconUrl: this.Toplabel.iconUrl,
+                    title: this.Toplabel.title
+                });
+                // 清空输入框内容
+                this.Toplabel.url = "";
+                this.Toplabel.iconUrl = "";
+                this.Toplabel.title = "";
+            },
+            // 编辑
+            edit(obj, e) {
+                // 阻止默认事件
+                e.preventDefault();
+                // 改变为修改
+                this.Toplabel.isEdit = true;
+                // 保存要编辑的对象
+                this.Toplabel.nowObj = obj;
+                // 弹出模态框
+                $('#exampleModal').modal('show');
+                // 获取原来的数据
+                this.Toplabel.url = obj.url;
+                this.Toplabel.iconUrl = obj.iconUrl;
+                this.Toplabel.title = obj.title;
+            },
+            // 确认编辑
+            editToplabelClici() {
+                this.Toplabel.ToplabelDatas.forEach((item, index) => {
+                    if (item.id == this.Toplabel.nowObj.id) {
+                        item.url = this.Toplabel.url
+                        item.iconUrl = this.Toplabel.iconUrl
+                        item.title = this.Toplabel.title
+                    }
+                });
+            },
+            // 删除一个
+            delConToplabel() {
+                let { nowObj } = this.Toplabel;
+                this.Toplabel.ToplabelDatas = this.Toplabel.ToplabelDatas.filter(item => item.id !== nowObj.id);
+            },
+            // 是否显示浏览记录
+            obtain() {
+                this.inputSearch.flag = true;
+            },
+            // 搜索内容
+            searchConten() {
+                if (!this.inputSearch.userWord) return;
+                location.href = `https://baidu.com/s?wd=${this.inputSearch.userWord}`
+                setTimeout(() => this.inputSearch.searchRecord.unshift(this.inputSearch.userWord), 50)
+            },
+            // 点击搜索记录也可以实现跳转
+            searchJump(e) {
+                location.href = `https://baidu.com/s?wd=${e.target.innerHTML}`
+            },
+            // 添加图片
+            addPicture() {
+                // 如果用户什么也没输入，则不添加任何数据
+                if (!this.tool.userImgUrl) return;
+                // 用户输入的数据
+                if (this.tool.userImgUrl.indexOf("#") == -1) {
+                    let word = `url${this.tool.userImgUrl}`
+                }
+                // 添加数据
+                this.tool.imgDatas.unshift({
+                    id: `${Date.now() - (Math.random() * 100)}`,
+                    url: this.tool.userImgUrl,
+                });
+                this.tool.userImgUrl = ""
+            },
+            // 右击删除一个图片
+            deletePicture(e, obj) {
+                e.preventDefault();
+                if (confirm(`确定要删除吗？----图片地址为：${obj.url}`))
+                    this.tool.imgDatas = this.tool.imgDatas.filter(item => item.id !== obj.id)
+            },
+            //    是否弹出添加模态框
+            isAdd() {
+                // 先清空文本框的值
+                this.Shortcut.ShortcutUrl = "";
+                this.Shortcut.ShortcutIcon = "";
+                this.Shortcut.Shortcuttitle = "";
+                this.Shortcut.isNewOpen = false;
+                // 是否添加数据
+                this.Shortcut.isAdd = false;
+                // 是否为修改状态
+                this.Shortcut.ismodify = false;
+            },
+            // 添加一个快捷方式
+            addShortcut() {
+                // 判断用户是否输入内容
+                if (!this.Shortcut.ShortcutUrl) return;
+                if (!this.Shortcut.ShortcutIcon) return;
+                if (!this.Shortcut.Shortcuttitle) return;
+                // 允许添加
+                this.Shortcut.isAdd = true;
+                // 添加一个快捷方式
+                this.Shortcut.ShortcutData.push({
+                    id: `${Date.now() - (Math.random() * 100)}`,
+                    url: this.Shortcut.ShortcutUrl,
+                    icon: this.Shortcut.ShortcutIcon,
+                    title: this.Shortcut.Shortcuttitle,
+                    isNewOpen: this.Shortcut.isNewOpen,
+                });
+                // 清空文本框内容
+                this.Shortcut.ShortcutUrl = "";
+                this.Shortcut.ShortcutIcon = "";
+                this.Shortcut.Shortcuttitle = "";
+            },
+            // 修改快捷方式
+            isedit(e, obj) {
+                // 阻止默认事件
+                e.preventDefault();
+                // 是否为编辑状态
+                this.Shortcut.ismodify = true;
+                // 把当前的对象保存到newShortcutData中
+                this.Shortcut.newShortcutData = obj;
+                // 弹出模态框
+                $('#Shortcut').modal('show');
+                // 显示要编辑对象的值
+                this.Shortcut.ShortcutUrl = obj.url;
+                this.Shortcut.ShortcutIcon = obj.icon;
+                this.Shortcut.Shortcuttitle = obj.title;
+                this.Shortcut.isNewOpen = obj.isNewOpen;
+            },
+            //修改快捷方式数据
+            editShortcut() {
+                // 如果id匹配成功，则修改数据
+                this.Shortcut.ShortcutData.forEach((item, index) => {
+                    if (item.id == this.Shortcut.newShortcutData.id) {
+                        item.url = this.Shortcut.ShortcutUrl;
+                        item.icon = this.Shortcut.ShortcutIcon;
+                        item.title = this.Shortcut.Shortcuttitle;
+                        item.isNewOpen = this.Shortcut.isNewOpen;
+                    }
+                });
+            },
+            //删除一个快捷方式
+            delShortcut() {
+                this.Shortcut.ShortcutData = this.Shortcut.ShortcutData.filter(item => item.id != this.Shortcut.newShortcutData.id)
+            }
+        },
+        computed: {
+            // 类名状态
+            inputClass() {
+                if (this.inputSearch.flag && this.inputSearch.searchRecord.length > 0) return 'search border-hide';
+                if (this.inputSearch.flag && this.inputSearch.searchRecord.length == 0) return ' search border-show'
+                return "search"
+            },
+            overflowBox() {
+                return this.inputSearch.searchRecord.length > 6;
+            },
+            // 更改主题颜色
+            themeBackground() {
+                return this.tool.imgUrl.charAt(0) !== '#' ? `background: url(${this.tool.imgUrl}) no-repeat` : `background-color: ${this.tool.imgUrl}`
+            }
+        },
+        watch: {
+            // 小标签
+            "Toplabel.ToplabelDatas": {
+                deep: true,
+                handler() {
+                    // 把数据存储在浏览器当中
+                    localStorage.setItem("ToplabelDatas", JSON.stringify(this.Toplabel.ToplabelDatas));
+                },
+            },
+            // 浏览记录
+            "inputSearch.searchRecord": {
+                handler() {
+                    // 把数据存储在浏览器当中
+                    localStorage.setItem("searchRecord", JSON.stringify(this.inputSearch.searchRecord));
+                },
+            },
+            // 快捷方式
+            "Shortcut.ShortcutData": {
+                deep: true,
+                handler() {
+                    // 把数据存储在浏览器当中
+                    localStorage.setItem("ShortcutData", JSON.stringify(this.Shortcut.ShortcutData));
+                },
+            },
+            // 存放图片路径
+            "tool.imgDatas": {
+                handler() {
+                    // 把数据存储在浏览器当中
+                    localStorage.setItem("imgDatas", JSON.stringify(this.tool.imgDatas));
+                },
+            },
+            // 保存当前页面的主题
+            "tool.imgUrl": {
+                deep: true,
+                handler() {
+                    // 把数据存储在浏览器当中
+                    localStorage.setItem("imgUrl", this.tool.imgUrl);
+                },
+            },
+        },
+        filters: {
+            // 截取多余的字符串
+            intercept(str) {
+                return str.length > 9 ? `${str.slice(0, 9)}...` : str;
+            }
+        }
+    }).$mount("#app")
+</script>
+
+</html>
